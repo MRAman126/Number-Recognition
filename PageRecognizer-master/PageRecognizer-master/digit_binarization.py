@@ -1,8 +1,4 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
 
-# Usage example:
-# `python digit_binarization.py -i img/nums/4.png`
 
 import cv2
 import optparse
@@ -75,7 +71,7 @@ def find_contours(img):
         cnt = cv2.approxPolyDP(cnt, 0.02*length, True)
         area = cv2.contourArea(cnt)
 
-        # Check for compactness ( area and length ratio)
+        # C  compactness ( area and length ratio)
         if area > 60:
             squares.append(cnt)
             # bound_rect = cv2.boundingRect(cnt)
@@ -93,10 +89,9 @@ def apply_denoise(img, zero_img):
     (contours, hierarchy) =  cv2.findContours(img.copy(), cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE )
 
     for i in range(len(contours)):
-        area = cv2.contourArea(contours[i]) # Площать
-        length = cv2.arcLength(contours[i], closed=True) # Периметр
+        area = cv2.contourArea(contours[i]) 
+        length = cv2.arcLength(contours[i], closed=True) 
 
-        # Тут можно поиграть с площадью и периметром. !!!
         if area > 40 and area < 400:
             cv2.drawContours( zero_img, contours, i, (255, 255, 255), -1, 8, hierarchy, 0, None )
 
@@ -108,30 +103,23 @@ if __name__ == '__main__':
     img = cv2.imread(opts.path_to_image)
 
     gray_scale_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    zero_img = np.zeros(img.shape, dtype=img.dtype) # Для рисования контуров
+    zero_img = np.zeros(img.shape, dtype=img.dtype)
 
-    # Варинат 1
-    # _________
-    # Применение фильтров
     img = apply_filters(gray_scale_img)
     render(img)
 
 
-    # Варинат 2
-    # _________ Зависит от 1-ого варианта
-    # Находим все контуры и рисуем их на чистом изображении
+    
     img, contoures = find_contours(img)
 
-    # Рисуем контуры на пустом изображении
+   
     cv2.drawContours(zero_img, contoures, -1,
                     (255, 255, 255),
-                    -1) # Об этом параметре: Отрицательный - заливает весь контур цветом, положительный - толщина линии обводки контура
+                    -1) 
     render(img)
 
 
-    # Варинат 3
-    # _________ Зависит от 1-ого варианта.
-    # Удаление шумовых контуров
+ 
     zero_img = apply_denoise(img, zero_img)
     render(zero_img)
 
