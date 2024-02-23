@@ -1,5 +1,4 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+
 
 import os.path
 import optparse
@@ -28,17 +27,17 @@ if __name__ == '__main__':
         max_value = range(10)
         index = range(10)
         for angle in xrange(-10, 50, 5):
-            #print img_filtered.shape
+            #p img_filtered.shape
             rot_mat = cv2.getRotationMatrix2D((img_filtered.shape[0]/2, img_filtered.shape[1]/2), angle, 1)
             img_rotated = cv2.warpAffine(img_filtered, rot_mat, (img_filtered.shape[0], img_filtered.shape[1]),flags=cv2.INTER_LINEAR)
-            #print img_rotated.shape
+            #p img_rotated.shape
             img_scaled = cv2.resize(img_rotated, (28, 28))
             cv2.imshow('scale', img_rotated)
             cv2.waitKey(0)
             z = [px / 255.0 for px in img_scaled.flatten('C').tolist()]
-            #print z
+            #p z
             probs = classify(z)
-            #print probs
+            #p probs
             max_value[angle / 5] = max(probs)
             if max_value[angle / 5] < 0.5:
                 index[angle / 5] = -1
